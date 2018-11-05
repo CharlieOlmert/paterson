@@ -8,6 +8,12 @@
 #
 
 library(shiny)
+library(readxl)
+library(dplyr)
+library(tidyverse)
+library(janitor)
+
+wines <- read_rds("wine.rds")
 
 # Define UI for application that draws a histogram
 ui <- fluidPage(
@@ -36,12 +42,10 @@ ui <- fluidPage(
 server <- function(input, output) {
    
    output$distPlot <- renderPlot({
-      # generate bins based on input$bins from ui.R
-      x    <- faithful[, 2] 
-      bins <- seq(min(x), max(x), length.out = input$bins + 1)
-      
-      # draw the histogram with the specified number of bins
-      hist(x, breaks = bins, col = 'darkgray', border = 'white')
+      wines %>% 
+       filter(Category == "Total production") %>% 
+       ggplot(aes(x = year, y = value, fill = "Total crushed")) +
+       geom_bar(stat = "identity")
    })
 }
 
